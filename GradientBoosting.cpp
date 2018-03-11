@@ -1,7 +1,5 @@
 #include <vector>
 #include "SolveTree.cpp"
-#include "Dataset.cpp"
-#include "DataObject.cpp"
 
 class GradientBoosting {
     std::vector<SolveTree> trees;
@@ -20,3 +18,4 @@ class GradientBoosting {
         return predictions;
     }
 };
+
