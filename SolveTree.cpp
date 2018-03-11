@@ -1,5 +1,6 @@
 #include <vector>
 #include "DataObject.cpp"
+#include "Dataset.cpp"
 
 class DecisionRule {
     int decision_feature;
@@ -59,8 +60,70 @@ public:
             return left_child;
         }
     }
+    
+    bool is_leaf() {
+        return left_child || right_child;
+    }
+    
+    double get_answer() {
+        return answer;
+    }
+};
+
+class SolveTreeFitParams {
+public:
+    int depth;
+    
+    SolveTreeFitParams(int depth=5) {
+        this->depth = depth;
+    }
+};
+
+class Prediction {
+    double prediction;
+    
+public:
+    Prediction(double prediction) {
+        this->prediction = prediction;
+    }
 };
 
 class SolveTree {
     Vertex *root;
+    
+    Prediction predict(const DataObject& data_object) {
+        Vertex *current_vertex = root;
+        while (!current_vertex->is_leaf()) {
+            current_vertex = current_vertex->move_by_decision_rule(data_object);
+        }
+        Prediction prediction(current_vertex->get_answer());
+        return prediction;
+    }
+    
+public:
+    SolveTree() {}
+    
+    void fit(const Dataset& dataset, SolveTreeFitParams params) {}
+    
+    std::vector<Prediction> predict(const Dataset& dataset) {
+        std::vector<Prediction> predictions;
+        for (DataObject data_object : dataset.get_data()) {
+            predictions.push_back(predict(data_object));
+        }
+        return predictions;
+    }
+    
+    
+    
+    
 };
+
+
+
+
+
+
+
+
+
+
