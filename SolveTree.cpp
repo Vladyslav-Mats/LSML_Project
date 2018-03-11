@@ -86,6 +86,14 @@ public:
     Prediction(double prediction) {
         this->prediction = prediction;
     }
+    
+    double get_prediction_value() {
+        return prediction;
+    }
+    
+    void operator += (Prediction other) {
+        this->prediction += other.get_prediction_value();
+    }
 };
 
 class SolveTree {
