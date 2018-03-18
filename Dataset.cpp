@@ -1,5 +1,7 @@
 #include <vector>
 #include <string>
+#include <fstream>
+#include <sstream>
 #include "DataObject.cpp"
 
 class Dataset {
@@ -12,8 +14,30 @@ public:
         this->data = data;
     }
     
-    Dataset(std::string filepath) {
-        // read from csv
+    Dataset(std::string filepath, bool with_target = true) {
+        std::ifstream in(filepath);
+        data.clear();
+        std::string line;
+        
+        while (std::getline(in, line)) {
+            std::vector<double> result;
+            std::getline(in, line);
+            std::stringstream lineStream(line);
+            std::string cell;
+            
+            while(std::getline(lineStream,cell, ','))
+            {
+                result.push_back(std::atof(cell.c_str()));
+            }
+            
+            if (with_target) {
+                double target = result.back();
+                result.pop_back();
+                data.push_back(DataObject(result, target));
+            } else {
+                data.push_back(DataObject(result));
+            }
+        }
     }
     
     unsigned long get_size() const {
@@ -37,7 +61,22 @@ public:
     }
     
     void save_to_csv(std::string filepath) const {
-        // save to csv
+        std::ofstream out(filepath);
+        
+        for (auto data_object : data) {
+            std::string csv_string = "";
+            for (double feature : data_object.get_features()) {
+                csv_string += std::to_string(feature) + ",";
+            }
+            
+            if (data_object.has_target()) {
+                csv_string += std::to_string(data_object.get_target()) + ",";
+            }
+            
+            csv_string.pop_back();
+            
+            out << csv_string << std::endl;
+        }
     }
     
     void shuffle_dataset(int seed=42) {

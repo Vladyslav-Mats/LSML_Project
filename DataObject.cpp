@@ -25,6 +25,10 @@ public:
         return features[num_of_feature];
     }
     
+    const bool has_target() const {
+        return known_target;
+    }
+    
     const double get_target() const {
         if (known_target) {
             return target;
