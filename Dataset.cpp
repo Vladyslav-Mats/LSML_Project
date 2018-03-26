@@ -2,24 +2,37 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
+#include <cassert>
+#include <utility>
+#include <iostream>
 #include "DataObject.cpp"
 
 class Dataset {
-    std::vector<DataObject> data;
+    std::vector<DataObject> data_;
+	std::vector<std::vector<bool> > binary_data_;
+	std::vector<std::vector<double> > thresholds_;
+	size_t num_features_;
+	const size_t BIN_COUNT = 16;
 
 public:
     Dataset() {}
     
-    Dataset(std::vector<DataObject> data) {
-        this->data = data;
+    Dataset(std::vector<DataObject>& data) {
+        this->data_ = data;
+		num_features_ = data[0].features_count();
+		binarize_data();
     }
     
     Dataset(std::string filepath, bool with_target = true) {
         std::ifstream in(filepath);
-        data.clear();
+        data_.clear();
         std::string line;
+		size_t lines_read = 0;
         
-        while (std::getline(in, line)) {
+        while (std::getline(in, line) && lines_read < 10000) {
+			++lines_read;
+
             std::vector<double> result;
             std::getline(in, line);
             std::stringstream lineStream(line);
@@ -33,37 +46,77 @@ public:
             if (with_target) {
                 double target = result.back();
                 result.pop_back();
-                data.push_back(DataObject(result, target));
+                data_.push_back(DataObject(result, target));
             } else {
-                data.push_back(DataObject(result));
+                data_.push_back(DataObject(result));
             }
+			num_features_ = data_[0].features_count();
         }
+		
+		binarize_data();
+		std::cout << "Data reading complete\n";
     }
+
+	void binarize_data() {
+		binary_data_ = std::vector<std::vector<bool> >(data_.size(),
+			std::vector<bool>(16 * num_features_));
+		thresholds_ = std::vector<std::vector<double> >(num_features_,
+			std::vector<double>(16));
+
+		for (int j = 0; j < num_features_; ++j) {
+			std::vector<double> feature_values(data_.size());
+			for (int i = 0; i < data_.size(); ++i) {
+				feature_values[i] = data_[i][j];
+			}
+
+			std::sort(feature_values.begin(), feature_values.end());
+
+			for (int i = 0; i < BIN_COUNT - 1; ++i) {
+				thresholds_[j][i] = feature_values[(i + 1) * data_.size() / BIN_COUNT];
+			}
+			thresholds_[j][BIN_COUNT - 1] = DBL_MAX;
+
+			for (int i = 0; i < data_.size(); ++i) {
+				for (int l = 0; l < BIN_COUNT; ++l) {
+					binary_data_[i][BIN_COUNT * j + l] = data_[i][j] < thresholds_[j][l];
+				}
+			}
+		}
+
+	}
     
     unsigned long get_size() const {
-        return data.size();
+        return binary_data_.size();
     }
+
+	double get_target(int ind) const {
+		return data_[ind].get_target();
+	}
     
     std::vector<DataObject> get_batch(unsigned long start_index, unsigned long size) const {
         std::vector<DataObject> batch;
         for (unsigned long i = start_index; i < start_index + size; ++i) {
-            batch.push_back(data[i]);
+            batch.push_back(data_[i]);
         }
         return batch;
     }
     
-    DataObject get_element(int index) const {
-        return data[index];
+    std::vector<bool> operator[](int index) const {
+        return binary_data_[index];
     }
     
-    std::vector<DataObject> get_data() const {
-        return data;
+    std::vector<std::vector<bool> > get_data() const {
+        return binary_data_;
     }
     
+	size_t features_count() const {
+		return num_features_ * BIN_COUNT;
+	}
+
     void save_to_csv(std::string filepath) const {
         std::ofstream out(filepath);
         
-        for (auto data_object : data) {
+        for (auto data_object : data_) {
             std::string csv_string = "";
             for (double feature : data_object.get_features()) {
                 csv_string += std::to_string(feature) + ",";
@@ -81,7 +134,7 @@ public:
     
     void shuffle_dataset(int seed=42) {
         std::srand(seed);
-        std::random_shuffle(data.begin(), data.end());
+        std::random_shuffle(data_.begin(), data_.end());
     }
     
     std::pair<Dataset, Dataset> train_val_split(double train_part=0.7) const {
@@ -92,14 +145,8 @@ public:
     }
     
     void add_data_object(DataObject data_object) {
-        data.push_back(data_object);
+        data_.push_back(data_object);
     }
-    
-    void add_dataset(Dataset dataset) {
-        std::vector<DataObject> data_to_add = dataset.get_data();
-        data.insert(data.end(), data_to_add.begin(), data_to_add.end());
-    }
-    
 };
 
 
