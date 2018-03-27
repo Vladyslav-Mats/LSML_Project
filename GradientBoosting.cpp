@@ -1,5 +1,6 @@
 #include <vector>
 #include <string>
+#include <set>
 #include "Dataset.cpp"
 
 class WeakClassifier {
@@ -13,13 +14,13 @@ public:
 		leaf_answers_ = std::vector<double>(1 << (depth_ + 1), 0.0);
 	}
 
-	std::vector<double> Predict(Dataset ds) {
+	std::vector<double> Predict(const Dataset& ds) {
 		std::vector<double> res(ds.get_size());
 
 		for (int i = 0; i < ds.get_size(); ++i) {
 			size_t mask = 0;
 			for (int j = 0; j < depth_; ++j) {
-				mask += (ds[i][j] << (depth_ - j));
+				mask += (ds[i][splitting_features_[j]] << (depth_ - j));
 			}
 			res[i] = leaf_answers_[mask];
 		}
@@ -55,7 +56,7 @@ public:
 
 			std::vector<int> leaf_ind(ds.get_size(), 0);
 			for (int d = 0; d < depth_; ++d) {
-				std::vector<int> temp_leaf_ind(ds.get_size(), 0);
+				std::vector<int> temp_leaf_ind(ds.get_size(), 0), best_leaf_ind(ds.get_size(), 0);
 				std::vector<double> leaf_sum(1 << (d + 1), 0.0);
 				std::vector<int> leaf_count(1 << (d + 1), 0);
 				std::vector<double> leaf_ans(1 << (d + 1), 0), best_leaf_ans(1 << (d+1), 0);
@@ -63,7 +64,6 @@ public:
 				size_t best_feature = 0;
 				double best_mse = DBL_MAX;
 				for (int j = 0; j < ds.features_count(); ++j) {
-					std::cout << "feature " << j << '\n';
 					double this_mse = 0.0;
 					//TODO: skip used features
 					for (int i = 0; i < ds.get_size(); ++i) {
@@ -81,15 +81,16 @@ public:
 						best_mse = this_mse;
 						best_feature = j;
 						best_leaf_ans = leaf_ans;
+						best_leaf_ind = temp_leaf_ind;
 					}
 				}
 
 				wc.splitting_features_.push_back(best_feature);
 				wc.leaf_answers_ = best_leaf_ans;
 				//output MSE for debugging, move this lower later
-				cur_pred = wc.Predict(ds);
 				double MSE = 0.0;
 				for (int i = 0; i < ds.get_size(); ++i) {
+					cur_pred[i] = best_leaf_ans[best_leaf_ind[i]];
 					MSE += (ds.get_target(i) - cur_pred[i]) * (ds.get_target(i) - cur_pred[i]);
 				}
 				MSE /= ds.get_size();
