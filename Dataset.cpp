@@ -30,7 +30,8 @@ public:
         std::string line;
 		size_t lines_read = 0;
         
-        while (std::getline(in, line) && lines_read < 10000) {
+		//TODO: rewrite with fscanf
+        while (std::getline(in, line) && lines_read < 5000) {
 			++lines_read;
 
             std::vector<double> result;
@@ -85,6 +86,10 @@ public:
 
 	}
     
+	size_t get_bin_count() const {
+		return BIN_COUNT;
+	}
+
     unsigned long get_size() const {
         return binary_data_.size();
     }
