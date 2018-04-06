@@ -31,7 +31,7 @@ public:
 		size_t lines_read = 0;
         
 		//TODO: rewrite with fscanf
-        while (std::getline(in, line) && lines_read < 5000) {
+        while (std::getline(in, line) && lines_read < 20000) {
 			++lines_read;
 
             std::vector<double> result;
