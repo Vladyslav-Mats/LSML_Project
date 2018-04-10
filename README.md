@@ -33,3 +33,23 @@ csv_path - path to csv with test dataset
 model_path - path to saved fitted model
 
 results_path - path where to save csv wiht results
+
+# Done experiments to compare with others
+
+Benchmarks: TODO
+
+Football: TODO
+
+Fraud detection: TODO
+
+BCI: TODO
+
+Planet Kaggle: TODO
+
+Higgs: TODO
+
+Airline: TODO
+
+# Used papers
+
+https://arxiv.org/pdf/1603.02754.pdf
