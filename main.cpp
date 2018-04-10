@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     //    // here we need save predictions to save path
     //}
 	Dataset train_data("../training.csv", true);
-	GradientBoosting gbm(0.0, 5, 1);
+	GradientBoosting gbm(0.0, 5, 2);
 	gbm.fit(train_data);
 	return 0;
 }

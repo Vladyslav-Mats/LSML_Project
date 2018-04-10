@@ -40,7 +40,7 @@ public:
 	}
 	void fit(const Dataset& ds) {
 		trees_.clear();
-		std::vector<double> cur_pred(ds.get_size(), 0);
+		std::vector<double> cur_pred(ds.get_size(), 0), temp_pred(ds.get_size(), 0);
 
 		for (int t = 0; t < tree_number; ++t) {
 			WeakClassifier wc(depth_);
@@ -53,6 +53,7 @@ public:
 				double best_mse = DBL_MAX, best_true_mse = DBL_MAX;
 				std::vector<double> best_leaf_sum;
 				std::vector<int> best_leaf_count;
+				//std::cout << "before feature loop\n";
 				for (int j = 0; j < ds.features_count(); ++j) {
 					std::vector<double> leaf_sum(1 << (d + 1), 0.0);
 					std::vector<int> leaf_count(1 << (d + 1), 0);
@@ -88,6 +89,7 @@ public:
 						best_leaf_count = leaf_count;
 					}
 				}
+				//std::cout << "after feature loop\n";
 				wc.splitting_features_.push_back(best_feature);
 				wc.leaf_answers_ = best_leaf_ans;
 				used_features.insert(best_feature / ds.get_bin_count());
@@ -99,12 +101,13 @@ public:
 				}
 				std::cout << '\n';
 				for (int i = 0; i < ds.get_size(); ++i) {
-					cur_pred[i] += best_leaf_ans[best_leaf_ind[i]];
-					MSE += (ds.get_target(i) - cur_pred[i]) * (ds.get_target(i) - cur_pred[i]);
+					temp_pred[i] = cur_pred[i] + best_leaf_ans[best_leaf_ind[i]];
+					MSE += (ds.get_target(i) - temp_pred[i]) * (ds.get_target(i) - temp_pred[i]);
 				}
 				MSE /= ds.get_size();
 				std::cout << "depth " << d << " MSE " << MSE << "\n\n";
 			}
+			cur_pred = temp_pred;
 			trees_.push_back(wc);
 		}
 	}
