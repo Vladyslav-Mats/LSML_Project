@@ -21,10 +21,14 @@ public:
         return features;
     }
     
-    double get_feature(int num_of_feature) const {
+    double operator[](int num_of_feature) const {
         return features[num_of_feature];
     }
     
+	size_t features_count() const {
+		return features.size();
+	}
+
     const bool has_target() const {
         return known_target;
     }
