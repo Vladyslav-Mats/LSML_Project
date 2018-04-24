@@ -1,8 +1,11 @@
-#pragma once
+#ifndef GR_BOOST_H
+#define GR_BOOST_H
+
 #include <vector>
 #include <string>
 #include <set>
 #include <random>
+#include "Dataset.h"
 
 class WeakClassifier {
 public:
@@ -23,7 +26,9 @@ public:
 	void SaveModel(std::string save_path);
 private:
 	std::vector<WeakClassifier> trees_;
-	double learning_rate;
-	int tree_number;
+	double learning_rate_;
+	int tree_number_;
 	size_t depth_;
 };
+#undef GRADIENT_BOOSTING_H
+#endif

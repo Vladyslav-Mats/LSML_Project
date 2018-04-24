@@ -1,4 +1,6 @@
-#pragma once
+#ifndef DATA_OBJECT_H
+#define DATA_OBJECT_H
+
 #include <vector>
 
 class DataObject {
@@ -41,3 +43,5 @@ public:
 		return 0;
 	}
 };
+#undef DATA_OBJECT_H
+#endif
