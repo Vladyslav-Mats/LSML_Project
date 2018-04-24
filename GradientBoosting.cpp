@@ -42,6 +42,7 @@ class GradientBoosting {
 				double best_mse = DBL_MAX, best_true_mse = DBL_MAX;
 				std::vector<double> best_leaf_sum;
 				std::vector<int> best_leaf_count;
+				//std::cout << "before feature loop\n";
 				for (int j = 0; j < ds.features_count(); ++j) {
 					std::vector<double> leaf_sum(1 << (d + 1), 0.0);
 					std::vector<int> leaf_count(1 << (d + 1), 0);
@@ -77,6 +78,7 @@ class GradientBoosting {
 						best_leaf_count = leaf_count;
 					}
 				}
+				//std::cout << "after feature loop\n";
 				wc.splitting_features_.push_back(best_feature);
 				wc.leaf_answers_ = best_leaf_ans;
 				used_features.insert(best_feature / ds.get_bin_count());
