@@ -57,6 +57,7 @@ void GradientBoosting::Fit(const Dataset& ds) {
 					continue;
 				}
 				//traverse dataset
+				#pragma omp parallel num_threads(4)
 				for (int i = 0; i < ds.GetSize(); ++i) {
 					temp_leaf_ind[i] = leaf_ind[i] * 2 + ds[i][j];
 					leaf_sum[temp_leaf_ind[i]] += ds.GetTarget(i) - cur_pred[i];
