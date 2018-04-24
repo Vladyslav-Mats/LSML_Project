@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include "GradientBoosting.cpp"
+#include "GradientBoosting.h"
 
 int main(int argc, char *argv[]) {
     //if (argv[1] == "fit") {
@@ -33,8 +33,8 @@ int main(int argc, char *argv[]) {
     //    
     //    // here we need save predictions to save path
     //}
-	Dataset train_data("../training.csv", true);
-	GradientBoosting gbm(0.0, 5, 2);
-	gbm.fit(train_data);
+	Dataset train_data("../HIGGS_train.csv", 0);
+	GradientBoosting gbm(0.0, 4, 1);
+	gbm.Fit(train_data);
 	return 0;
 }
