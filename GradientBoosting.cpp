@@ -1,13 +1,7 @@
-#include <vector>
-#include <string>
-#include <set>
-#include <random>
-#include "Dataset.cpp"
+#include "GradientBoosting.h"
+
 class WeakClassifier {
 public:
-	size_t depth_;
-	std::vector<size_t> splitting_features_;
-	std::vector<double> leaf_answers_;
 	WeakClassifier(size_t depth) : depth_(depth) {
 		splitting_features_ = std::vector<size_t>();
 		leaf_answers_ = std::vector<double>(1 << (depth_ + 1), 0.0);
@@ -25,11 +19,6 @@ public:
 	}
 };
 class GradientBoosting {
-	std::vector<WeakClassifier> trees_;
-	double learning_rate;
-	int tree_number;
-	size_t depth_;
-public:
 	GradientBoosting(double learning_rate, size_t depth, int tree_size) {
 		this->learning_rate = learning_rate;
 		this->tree_number = tree_size;
@@ -38,9 +27,9 @@ public:
 	GradientBoosting(std::string model_path) {
 		// restore saved model
 	}
-	void fit(const Dataset& ds) {
+	void Fit(const Dataset& ds) {
 		trees_.clear();
-		std::vector<double> cur_pred(ds.get_size(), 0);
+		std::vector<double> cur_pred(ds.get_size(), 0), temp_pred(ds.get_size(), 0);
 
 		for (int t = 0; t < tree_number; ++t) {
 			WeakClassifier wc(depth_);
@@ -95,20 +84,21 @@ public:
 				//output MSE for debugging, move this lower later
 				double MSE = 0.0;
 				for (int i = 0; i < best_leaf_ans.size(); ++i) {
-					std::cout << best_leaf_ans[i] << ' ';
+					std::cerr << best_leaf_ans[i] << ' ';
 				}
-				std::cout << '\n';
+				std::cerr << '\n';
 				for (int i = 0; i < ds.get_size(); ++i) {
-					cur_pred[i] += best_leaf_ans[best_leaf_ind[i]];
-					MSE += (ds.get_target(i) - cur_pred[i]) * (ds.get_target(i) - cur_pred[i]);
+					temp_pred[i] = cur_pred[i] + best_leaf_ans[best_leaf_ind[i]];
+					MSE += (ds.get_target(i) - temp_pred[i]) * (ds.get_target(i) - temp_pred[i]);
 				}
 				MSE /= ds.get_size();
-				std::cout << "depth " << d << " MSE " << MSE << "\n\n";
+				std::cerr << "depth " << d << " MSE " << MSE << "\n\n";
 			}
+			cur_pred = temp_pred;
 			trees_.push_back(wc);
 		}
 	}
-	std::vector<double> predict(const Dataset& dataset) {
+	std::vector<double> Predict(const Dataset& dataset) {
 		std::vector<double> predictions(dataset.get_size());
 		for (WeakClassifier solve_tree : trees_) {
 			std::vector<double> predictions_for_tree = solve_tree.Predict(dataset);
@@ -118,7 +108,7 @@ public:
 		}
 		return predictions;
 	}
-	void save_model(std::string save_path) {
+	void SaveModel(std::string save_path) {
 		// save model
 	}
 };

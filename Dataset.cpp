@@ -1,12 +1,4 @@
-#include <vector>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <algorithm>
-#include <cassert>
-#include <utility>
-#include <iostream>
-#include "DataObject.cpp"
+#include "Dataset.h"
 
 class Dataset {
     std::vector<DataObject> data_;
@@ -24,36 +16,56 @@ public:
 		binarize_data();
     }
     
-    Dataset(std::string filepath, bool with_target = true) {
-        std::ifstream in(filepath);
-        data_.clear();
-        std::string line;
+    Dataset(std::string filepath, size_t target_pos = std::string::npos) {
+		data_.clear();
 		size_t lines_read = 0;
-        
-		//TODO: rewrite with fscanf
-        while (std::getline(in, line) && lines_read < 20000) {
-			++lines_read;
+		num_features_ = 0;
 
-            std::vector<double> result;
-            std::getline(in, line);
-            std::stringstream lineStream(line);
-            std::string cell;
-            
-            while(std::getline(lineStream,cell, ','))
-            {
-                result.push_back(std::atof(cell.c_str()));
-            }
-            
-            if (with_target) {
-                double target = result.back();
-                result.pop_back();
-                data_.push_back(DataObject(result, target));
-            } else {
-                data_.push_back(DataObject(result));
-            }
+		FILE * pFile;
+		const size_t LINE_MAX = 100000;
+		char line[LINE_MAX];
+
+		pFile = fopen(filepath.c_str(), "r");
+
+		//TODO: rewrite with fscanf
+		while (fgets(line, LINE_MAX, pFile) != NULL) {
+			++lines_read;
+			if (lines_read % 10000 == 0) {
+				std::cerr << "\rlines read: " << lines_read;
+			}
+
+			std::vector<double> result;
+			char buf[100];
+			size_t ptr = 0;
+			double target = DBL_MAX;
+			bool target_passed = false;
+
+			for (int i = 0; line[i] != '\0'; ++i) {
+				if (line[i] == ',') {
+					buf[ptr] = '\0';
+					if (!target_passed && target_pos == result.size()) {
+						target = std::atof(buf);
+						target_passed = true;
+					}
+					else {
+						result.push_back(std::atof(buf));
+					}
+					ptr = 0;
+				}
+				else {
+					buf[ptr++] = line[i];
+				}
+			}
+
+			if (target_pos == std::string::npos) {
+				target = result.back();
+				result.pop_back();
+			}
+
+			data_.push_back(DataObject(result, target));
 			num_features_ = data_[0].features_count();
-        }
-		
+		}
+
 		binarize_data();
 		std::cout << "Data reading complete\n";
     }
