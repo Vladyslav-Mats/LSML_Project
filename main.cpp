@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     //    // here we need save predictions to save path
     //}
 	Dataset train_data("../HIGGS_train.csv");
-	GradientBoosting gbm(0.0, 4, 1);
+	GradientBoosting gbm(0.0, 4, 3);
 	gbm.Fit(train_data);
 	return 0;
 }
