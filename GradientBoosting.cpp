@@ -1,5 +1,6 @@
 #include "GradientBoosting.h"
 #include <chrono>
+#include <fstream>
 #include <omp.h>
 
 WeakClassifier::WeakClassifier(size_t depth) : depth_(depth) {
@@ -27,7 +28,25 @@ GradientBoosting::GradientBoosting(double learning_rate, size_t depth, int tree_
 }
 
 GradientBoosting::GradientBoosting(std::string model_path) {
-	// restore saved model
+    std::ifstream in(model_path);
+    in >> depth_ >> tree_number_ >> learning_rate_;
+    for (int tree = 0; tree < tree_number_; ++tree) {
+        int depth;
+        in >> depth;
+        WeakClassifier new_classifier(depth);
+        int leaf_answer_length;
+        in >> leaf_answer_length;
+        new_classifier.leaf_answers_ = std::vector<double>(leaf_answer_length);
+        for (int i = 0; i < leaf_answer_length; ++i) {
+            in >> new_classifier.leaf_answers_[i];
+        }
+        int splitting_feature_length;
+        in >> splitting_feature_length;
+        new_classifier.splitting_features_ = std::vector<size_t>(splitting_feature_length);
+        for (int i = 0; i < splitting_feature_length; ++i) {
+            in >> new_classifier.splitting_features_[i];
+        }
+    }
 }
 
 void GradientBoosting::Fit(const Dataset& ds) {
@@ -51,11 +70,11 @@ void GradientBoosting::Fit(const Dataset& ds) {
 			std::vector<double> best_leaf_ans(1 << (d + 1), 0);
 			std::set<size_t> used_features;
 			size_t best_feature = 0;
-			double best_mse = DBL_MAX, best_true_mse = DBL_MAX;
+			double best_mse = __DBL_MAX__, best_true_mse = __DBL_MAX__;
 			std::vector<double> best_leaf_sum;
 			std::vector<int> best_leaf_count;
 			//std::cout << "before feature loop\n";
-			#pragma omp parallel for num_threads(NUM_THREADS)
+            #pragma omp parallel for num_threads(NUM_THREADS)
 			for (int j = 0; j < ds.GetNumFeatures(); ++j) {
 				if (omp_get_thread_num() == 0) {
 					int progress = j * NUM_THREADS*100.0 / ds.GetNumFeatures();
@@ -144,5 +163,19 @@ std::vector<double> GradientBoosting::Predict(const Dataset& dataset) {
 }
 
 void GradientBoosting::SaveModel(std::string save_path) {
-	// save model
+    std::ofstream out(save_path);
+    out << depth_ << " " << tree_number_ << " " << learning_rate_ << std::endl;
+    for (auto tree : trees_) {
+        out << tree.depth_ << std::endl;
+        out << tree.leaf_answers_.size() << std::endl;
+        for (auto answer : tree.leaf_answers_) {
+            out << answer << " ";
+        }
+        out << std::endl << tree.splitting_features_.size() << std::endl;
+
+        for (auto feature : tree.splitting_features_) {
+            out << feature << " ";
+        }
+        out << std::endl;
+    }
 }
