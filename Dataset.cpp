@@ -1,7 +1,7 @@
 #include "Dataset.h"
 #include <chrono>
 
-Dataset::Dataset(std::vector<DataObject>& data) {
+Dataset::Dataset(const std::vector<DataObject>& data) {
 	this->data_ = data;
 	num_features_ = data[0].features_count();
 	BinarizeData();
@@ -21,7 +21,6 @@ Dataset::Dataset(std::string filepath, size_t target_pos) {
 	std::chrono::high_resolution_clock::time_point t1 = 
 		std::chrono::high_resolution_clock::now();
 
-	//TODO: rewrite with fscanf
 	while (fgets(line, LINE_MAX, pFile) != NULL) {
 		++lines_read;
 		if (lines_read % 10000 == 0) {
@@ -31,9 +30,8 @@ Dataset::Dataset(std::string filepath, size_t target_pos) {
 		std::vector<double> result;
 		char buf[100];
 		size_t ptr = 0;
-		double target = DBL_MAX;
+		double target = __DBL_MAX__;
 		bool target_passed = false;
-
 		for (int i = 0; line[i] != '\0'; ++i) {
 			if (line[i] == ',') {
 				buf[ptr] = '\0';
@@ -50,7 +48,8 @@ Dataset::Dataset(std::string filepath, size_t target_pos) {
 				buf[ptr++] = line[i];
 			}
 		}
-
+        
+        result.push_back(std::atof(buf));
 		if (target_pos == std::string::npos) {
 			target = result.back();
 			result.pop_back();
@@ -84,7 +83,7 @@ void Dataset::BinarizeData() {
 		for (int i = 0; i < BIN_COUNT - 1; ++i) {
 			thresholds_[j][i] = feature_values[(i + 1) * data_.size() / BIN_COUNT];
 		}
-		thresholds_[j][BIN_COUNT - 1] = DBL_MAX;
+		thresholds_[j][BIN_COUNT - 1] = __DBL_MAX__;
 
 		for (int i = 0; i < data_.size(); ++i) {
 			for (int l = 0; l < BIN_COUNT; ++l) {

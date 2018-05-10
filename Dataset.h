@@ -21,7 +21,7 @@ class Dataset {
 public:
 	Dataset() {}
 
-	Dataset(std::vector<DataObject>& data);
+	Dataset(const std::vector<DataObject>& data);
 
 	Dataset(std::string filepath, size_t target_pos = std::string::npos);
 

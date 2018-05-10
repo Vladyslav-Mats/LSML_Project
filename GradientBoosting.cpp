@@ -13,7 +13,7 @@ std::vector<double> WeakClassifier::Predict(const Dataset& ds) {
 	for (int i = 0; i < ds.GetSize(); ++i) {
 		size_t mask = 0;
 		for (int j = 0; j < depth_; ++j) {
-			mask += (ds[i][splitting_features_[j]] << (depth_ - j));
+			mask += (ds[i][splitting_features_[j]] << (depth_ - j - 1));
 		}
 		res[i] = leaf_answers_[mask];
 	}
@@ -46,6 +46,7 @@ GradientBoosting::GradientBoosting(std::string model_path) {
         for (int i = 0; i < splitting_feature_length; ++i) {
             in >> new_classifier.splitting_features_[i];
         }
+        trees_.push_back(new_classifier);
     }
 }
 
@@ -73,7 +74,6 @@ void GradientBoosting::Fit(const Dataset& ds) {
 			double best_mse = __DBL_MAX__, best_true_mse = __DBL_MAX__;
 			std::vector<double> best_leaf_sum;
 			std::vector<int> best_leaf_count;
-			//std::cout << "before feature loop\n";
             #pragma omp parallel for num_threads(NUM_THREADS)
 			for (int j = 0; j < ds.GetNumFeatures(); ++j) {
 				if (omp_get_thread_num() == 0) {
@@ -121,7 +121,6 @@ void GradientBoosting::Fit(const Dataset& ds) {
 					}
 				}				
 			}
-			//std::cout << "after feature loop\n";
 			wc.splitting_features_.push_back(best_feature);
 			wc.leaf_answers_ = best_leaf_ans;
 			used_features.insert(best_feature / ds.GetBinCount());
@@ -136,7 +135,7 @@ void GradientBoosting::Fit(const Dataset& ds) {
 			}
 			std::cerr << "\n";
 			for (int i = 0; i < ds.GetSize(); ++i) {
-				temp_pred[i] = cur_pred[i] + best_leaf_ans[best_leaf_ind[i]];
+				temp_pred[i] = cur_pred[i] + learning_rate_ * best_leaf_ans[best_leaf_ind[i]];
 				MSE += (ds.GetTarget(i) - temp_pred[i]) * (ds.GetTarget(i) - temp_pred[i]);
 			}
 			MSE /= ds.GetSize();
@@ -156,9 +155,15 @@ std::vector<double> GradientBoosting::Predict(const Dataset& dataset) {
 	for (WeakClassifier solve_tree : trees_) {
 		std::vector<double> predictions_for_tree = solve_tree.Predict(dataset);
 		for (int i = 0; i < predictions.size(); ++i) {
-			predictions[i] += predictions_for_tree[i];
+			predictions[i] += learning_rate_ * predictions_for_tree[i];
 		}
 	}
+    
+    double mse = 0;
+    for (int i = 0; i < predictions.size(); ++i) {
+        mse += (predictions[i] - dataset.GetTarget(i)) * (predictions[i] - dataset.GetTarget(i)) / predictions.size();
+    }
+    std::cerr << "Resulting MSE " << mse << "\n\n";
 	return predictions;
 }
 
