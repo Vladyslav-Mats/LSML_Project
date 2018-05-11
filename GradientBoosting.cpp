@@ -14,7 +14,7 @@ std::vector<double> WeakClassifier::Predict(const Dataset& ds) {
 	for (int i = 0; i < ds.GetSize(); ++i) {
 		size_t mask = 0;
 		for (int j = 0; j < depth_; ++j) {
-			mask += (ds[i][splitting_features_[j]] << (depth_ - j - 1));
+			mask += (ds[splitting_features_[j]][i] << (depth_ - j - 1));
 		}
 		res[i] = leaf_answers_[mask];
 	}
@@ -75,6 +75,7 @@ void GradientBoosting::Fit(const Dataset& ds) {
 			double best_mse = std::numeric_limits<double>::max(), best_true_mse = std::numeric_limits<double>::max();
 			std::vector<double> best_leaf_sum;
 			std::vector<int> best_leaf_count;
+			
             #pragma omp parallel for num_threads(NUM_THREADS)
 			for (int j = 0; j < ds.GetNumFeatures(); ++j) {
 				if (omp_get_thread_num() == 0) {
@@ -92,9 +93,9 @@ void GradientBoosting::Fit(const Dataset& ds) {
 				if (used_features.count(j / ds.GetBinCount()) > 0) {
 					continue;
 				}
-				//traverse dataset				
+				//traverse dataset		
 				for (int i = 0; i < ds.GetSize(); ++i) {
-					temp_leaf_ind[i] = leaf_ind[i] * 2 + ds[i][j];
+					temp_leaf_ind[i] = leaf_ind[i] * 2 + ds.getTransposeElement(j, i);
 					leaf_sum[temp_leaf_ind[i]] += targets[i] - cur_pred[i];
 					++leaf_count[temp_leaf_ind[i]];
 				}

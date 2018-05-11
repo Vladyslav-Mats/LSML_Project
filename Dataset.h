@@ -14,7 +14,7 @@
 class Dataset {
 	std::vector<DataObject> data_;
 	std::vector<std::vector<bool> > binary_data_;
-    std::vector<std::vector<bool> > transponed_binary_data_;
+	std::vector<std::vector<bool> > transponsed_binary_data_;
 	std::vector<std::vector<double> > thresholds_;
 	size_t num_features_;
 	const size_t BIN_COUNT = 16;
@@ -27,6 +27,19 @@ public:
 	Dataset(std::string filepath, size_t target_pos = std::string::npos);
 
 	void BinarizeData();
+
+	void TransposeData() {
+		transponsed_binary_data_ = std::vector<std::vector<bool> >(binary_data_[0].size(), std::vector<bool>(binary_data_.size()));
+		for (int i = 0; i < binary_data_.size(); ++i) {
+			for (int j = 0; j < binary_data_[i].size(); ++j) {
+				transponsed_binary_data_[j][i] = binary_data_[i][j];
+			}
+		}
+	}
+
+	bool getTransposeElement(int i, int j) const {
+		return transponsed_binary_data_[i][j];
+	}
 
 	size_t GetBinCount() const {
 		return BIN_COUNT;
