@@ -58,8 +58,11 @@ Dataset::Dataset(std::string filepath, size_t target_pos) {
 		data_.push_back(DataObject(result, target));
 		num_features_ = data_[0].features_count();
 	}
-
+    
+    std::cout << "Data binarizing ..." << std::endl;
 	BinarizeData();
+    std::cout << "Data transposing ..." << std::endl;
+    TransposeData();
 	std::chrono::high_resolution_clock::time_point t2 =
 		std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::seconds>(t2 - t1).count();

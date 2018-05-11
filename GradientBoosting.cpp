@@ -93,7 +93,7 @@ void GradientBoosting::Fit(const Dataset& ds) {
 				}
 				//traverse dataset				
 				for (int i = 0; i < ds.GetSize(); ++i) {
-					temp_leaf_ind[i] = leaf_ind[i] * 2 + ds[i][j];
+					temp_leaf_ind[i] = leaf_ind[i] * 2 + ds.getTransposeElement(j, i);
 					leaf_sum[temp_leaf_ind[i]] += targets[i] - cur_pred[i];
 					++leaf_count[temp_leaf_ind[i]];
 				}
