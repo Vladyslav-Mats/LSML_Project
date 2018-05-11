@@ -4,7 +4,11 @@ It's the repo with team project for LSML course in YSDA. Our team's theme is "Mu
 
 # Usage
 
-To run Gradient boosting you need to clone repo and compile main. It has 2 modes - Fit and Predict.
+To run Gradient boosting you need to clone repo and compile it. Intended method of compilation is to make something like
+
+/usr/local/bin/g++-7 -O2 -std=c++11 -fopenmp -o out -I . *.cpp
+
+It has 2 modes - Fit and Predict.
 
 ### Example of running Fit mode:
 
@@ -12,15 +16,15 @@ To run Gradient boosting you need to clone repo and compile main. It has 2 modes
 
 ### Args description:
 
-csv_path - path to csv file with train dataset, last column should be target function
+string csv_path - path to csv file with train dataset, last column should be target function
 
-learning_rate - double variable learning rate
+double learning_rate - gradient boosting learning rate
 
-tree_number - int variable number of trees to fit
+int tree_number - number of trees to fit
 
-tree_size - maximal depth of trees
+int tree_size - maximal depth of trees
 
-save_path - path to save a fitted model
+string save_path - path to save a fitted model
 
 ### Example of running Predict mode:
 
@@ -28,27 +32,34 @@ save_path - path to save a fitted model
 
 ### Args description:
 
-csv_path - path to csv with test dataset
+string csv_path - path to csv with test dataset
 
-model_path - path to saved fitted model
+string model_path - path to saved fitted model
 
-results_path - path where to save csv wiht results
+string results_path - path where to save csv wiht results
 
 # Done experiments to compare with others
 
 Benchmarks: TODO
 
-Football: TODO
+Higgs:
 
-Fraud detection: TODO
+Our algorithm results:
 
-BCI: TODO
+| Tree number | Depth | Threads | Total time | Time for tree building only | Train error | Test error |
+|-------------|-------|---------|------------|-----------------------------|-------------|------------|
+|             |       |         |            |                             |             |            |
+|             |       |         |            |                             |             |            |
+|             |       |         |            |                             |             |            |
 
-Planet Kaggle: TODO
+LightGBM results:
 
-Higgs: TODO
+| Tree number | Depth | Threads | Total time | Time for tree building only | Train error | Test error |
+|-------------|-------|---------|------------|-----------------------------|-------------|------------|
+|             |       |         |           |                             |             |            |
+|             |       |         |            |                             |             |            |
+|             |       |         |            |                             |             |            |
 
-Airline: TODO
 
 # Used papers
 
