@@ -71,8 +71,8 @@ void Dataset::BinarizeData() {
 	std::chrono::high_resolution_clock::time_point t1 =
 		std::chrono::high_resolution_clock::now();
 
-	binary_data_ = std::vector<std::vector<bool> >(data_.size(),
-		std::vector<bool>(16 * num_features_));
+	binary_data_ = std::vector<std::vector<bool> >(16 * num_features_,
+		std::vector<bool>(data_.size()));
 	thresholds_ = std::vector<std::vector<double> >(num_features_,
 		std::vector<double>(16));
 
@@ -93,7 +93,7 @@ void Dataset::BinarizeData() {
 
 		for (int i = 0; i < data_.size(); ++i) {
 			for (int l = 0; l < BIN_COUNT; ++l) {
-				binary_data_[i][BIN_COUNT * j + l] = data_[i][j] < thresholds_[j][l];
+				binary_data_[BIN_COUNT * j + l][i] = data_[i][j] < thresholds_[j][l];
 			}
 		}
 	}

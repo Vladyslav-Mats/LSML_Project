@@ -14,6 +14,7 @@
 class Dataset {
 	std::vector<DataObject> data_;
 	std::vector<std::vector<bool> > binary_data_;
+    std::vector<std::vector<bool> > transponed_binary_data_;
 	std::vector<std::vector<double> > thresholds_;
 	size_t num_features_;
 	const size_t BIN_COUNT = 16;
