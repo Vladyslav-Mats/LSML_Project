@@ -4,7 +4,11 @@ It's the repo with team project for LSML course in YSDA. Our team's theme is "Mu
 
 # Usage
 
-To run Gradient boosting you need to clone repo and compile main. It has 2 modes - Fit and Predict.
+To run Gradient boosting you need to clone repo and compile it. Intended method of compilation is to make something like
+
+/usr/local/bin/g++-7 -O2 -std=c++11 -fopenmp -o out -I . *.cpp
+
+It has 2 modes - Fit and Predict.
 
 ### Example of running Fit mode:
 
@@ -38,17 +42,24 @@ results_path - path where to save csv wiht results
 
 Benchmarks: TODO
 
-Football: TODO
+Higgs:
 
-Fraud detection: TODO
+Our algorithm results:
 
-BCI: TODO
+| Tree number | Depth | Threads | Total time | Time for tree building only | Train error | Test error |
+|-------------|-------|---------|------------|-----------------------------|-------------|------------|
+|             |       |         |            |                             |             |            |
+|             |       |         |            |                             |             |            |
+|             |       |         |            |                             |             |            |
 
-Planet Kaggle: TODO
+LightGBM results:
 
-Higgs: TODO
+| Tree number | Depth | Threads | Total time | Time for tree building only | Train error | Test error |
+|-------------|-------|---------|------------|-----------------------------|-------------|------------|
+|             |       |         |           |                             |             |            |
+|             |       |         |            |                             |             |            |
+|             |       |         |            |                             |             |            |
 
-Airline: TODO
 
 # Used papers
 
