@@ -16,15 +16,15 @@ It has 2 modes - Fit and Predict.
 
 ### Args description:
 
-csv_path - path to csv file with train dataset, last column should be target function
+string csv_path - path to csv file with train dataset, last column should be target function
 
-learning_rate - double variable learning rate
+double learning_rate - gradient boosting learning rate
 
-tree_number - int variable number of trees to fit
+int tree_number - number of trees to fit
 
-tree_size - maximal depth of trees
+int tree_size - maximal depth of trees
 
-save_path - path to save a fitted model
+string save_path - path to save a fitted model
 
 ### Example of running Predict mode:
 
@@ -32,11 +32,11 @@ save_path - path to save a fitted model
 
 ### Args description:
 
-csv_path - path to csv with test dataset
+string csv_path - path to csv with test dataset
 
-model_path - path to saved fitted model
+string model_path - path to saved fitted model
 
-results_path - path where to save csv wiht results
+string results_path - path where to save csv wiht results
 
 # Done experiments to compare with others
 
