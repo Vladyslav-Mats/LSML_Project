@@ -1,5 +1,6 @@
 #include "Dataset.h"
 #include <chrono>
+#include <limits>
 
 Dataset::Dataset(const std::vector<DataObject>& data) {
 	this->data_ = data;
@@ -30,7 +31,7 @@ Dataset::Dataset(std::string filepath, size_t target_pos) {
 		std::vector<double> result;
 		char buf[100];
 		size_t ptr = 0;
-		double target = __DBL_MAX__;
+		double target = std::numeric_limits<double>::max();
 		bool target_passed = false;
 		for (int i = 0; line[i] != '\0'; ++i) {
 			if (line[i] == ',') {
@@ -59,20 +60,25 @@ Dataset::Dataset(std::string filepath, size_t target_pos) {
 		num_features_ = data_[0].features_count();
 	}
 
-	BinarizeData();
 	std::chrono::high_resolution_clock::time_point t2 =
 		std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::seconds>(t2 - t1).count();
-	std::cout << "\nData reading complete, time elapsed: " << duration << " seconds\n";
+	std::cerr << "\rData reading complete, time elapsed: " << duration << " seconds\n";
+	BinarizeData();	
 }
 
 void Dataset::BinarizeData() {
+	std::chrono::high_resolution_clock::time_point t1 =
+		std::chrono::high_resolution_clock::now();
+
 	binary_data_ = std::vector<std::vector<bool> >(data_.size(),
 		std::vector<bool>(16 * num_features_));
 	thresholds_ = std::vector<std::vector<double> >(num_features_,
 		std::vector<double>(16));
 
 	for (int j = 0; j < num_features_; ++j) {
+		std::cerr << "\rFeature binarization: " << j << '/' << num_features_;
+
 		std::vector<double> feature_values(data_.size());
 		for (int i = 0; i < data_.size(); ++i) {
 			feature_values[i] = data_[i][j];
@@ -83,7 +89,7 @@ void Dataset::BinarizeData() {
 		for (int i = 0; i < BIN_COUNT - 1; ++i) {
 			thresholds_[j][i] = feature_values[(i + 1) * data_.size() / BIN_COUNT];
 		}
-		thresholds_[j][BIN_COUNT - 1] = __DBL_MAX__;
+		thresholds_[j][BIN_COUNT - 1] = std::numeric_limits<double>::max();
 
 		for (int i = 0; i < data_.size(); ++i) {
 			for (int l = 0; l < BIN_COUNT; ++l) {
@@ -92,6 +98,10 @@ void Dataset::BinarizeData() {
 		}
 	}
 
+	std::chrono::high_resolution_clock::time_point t2 =
+		std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::seconds>(t2 - t1).count();
+	std::cerr << "\rFeature binarization complete, time elapsed: " << duration << " seconds\n";
 }
    
 std::vector<DataObject> Dataset::GetBatch(unsigned long start_index, unsigned long size) const {

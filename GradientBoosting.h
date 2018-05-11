@@ -18,7 +18,7 @@ public:
 
 class GradientBoosting {
 public:
-	GradientBoosting(double learning_rate, size_t depth, int tree_size);
+	GradientBoosting(double learning_rate, int tree_number, size_t depth);
 	GradientBoosting(std::string model_path);
 
 	void Fit(const Dataset& ds);

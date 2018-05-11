@@ -3,9 +3,14 @@
 #include "GradientBoosting.h"
 
 int main(int argc, char *argv[]) {
+	if (argc < 2) {
+		std::cerr << "Expected mode: fit or predict" << std::endl;
+		return 0;
+	}
     if (std::string(argv[1]) == "fit") {
         if (argc != 7) {
-            std::cout << "Expected 5 arguments after fit: csv path, learning rate, tree number, tree size and save path" << std::endl;
+            std::cerr << "Expected 5 arguments after fit: csv path, learning rate, tree number, tree depth and save path" << std::endl;
+			return 0;
         }
         
         std::string csv_path = argv[2];
@@ -20,7 +25,8 @@ int main(int argc, char *argv[]) {
         boosting_instance.SaveModel(save_path);
     } else if (std::string(argv[1]) == "predict") {
         if (argc != 5) {
-            std::cout << "Expected 3 arguments after predict: csv path, model path and results path" << std::endl;
+            std::cerr << "Expected 3 arguments after predict: csv path, model path and results path" << std::endl;
+			return 0;
         }
         
         std::string csv_path = argv[2];
@@ -35,6 +41,9 @@ int main(int argc, char *argv[]) {
         for (auto y : prediction) {
             out << y << " " << std::endl;
         }
-    }
+	}
+	else {
+		std::cerr << "Wrong mode: needed fit or predict.\n";
+	}
 	return 0;
 }

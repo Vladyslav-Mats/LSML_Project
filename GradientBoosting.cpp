@@ -2,6 +2,7 @@
 #include <chrono>
 #include <fstream>
 #include <omp.h>
+#include <limits>
 
 WeakClassifier::WeakClassifier(size_t depth) : depth_(depth) {
 	splitting_features_ = std::vector<size_t>();
@@ -21,9 +22,9 @@ std::vector<double> WeakClassifier::Predict(const Dataset& ds) {
 }
 
 
-GradientBoosting::GradientBoosting(double learning_rate, size_t depth, int tree_size) {
+GradientBoosting::GradientBoosting(double learning_rate, int tree_number, size_t depth) {
 	this->learning_rate_ = learning_rate;
-	this->tree_number_ = tree_size;
+	this->tree_number_ = tree_number;
 	this->depth_ = depth;
 }
 
@@ -71,7 +72,7 @@ void GradientBoosting::Fit(const Dataset& ds) {
 			std::vector<double> best_leaf_ans(1 << (d + 1), 0);
 			std::set<size_t> used_features;
 			size_t best_feature = 0;
-			double best_mse = __DBL_MAX__, best_true_mse = __DBL_MAX__;
+			double best_mse = std::numeric_limits<double>::max(), best_true_mse = std::numeric_limits<double>::max();
 			std::vector<double> best_leaf_sum;
 			std::vector<int> best_leaf_count;
             #pragma omp parallel for num_threads(NUM_THREADS)
