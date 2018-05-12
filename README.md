@@ -6,7 +6,7 @@ It's the repo with team project for LSML course in YSDA. Our team's theme is "Mu
 
 To run Gradient boosting you need to clone repo and compile it. Intended method of compilation is to make something like
 
-/usr/local/bin/g++-7 -O2 -std=c++11 -fopenmp -o out -I . *.cpp
+/usr/local/bin/g++-7 -Ofast -std=c++11 -fopenmp -o out -I . *.cpp
 
 It has 2 modes - Fit and Predict.
 
@@ -50,23 +50,23 @@ Our algorithm with single thread results:
 
 | Tree number | Depth | Threads | Dataset reading and binarizing | Time for tree building | Train MSE | Test MSE |
 |-------------|-------|---------|--------------------------------|------------------------|-----------|----------|
-| 10          | 3     | 1       | 2                              | 8                      | 0.131936  | 0.131422 |
-| 30          | 3     | 1       | 2                              | 25                     | 0.124073  | 0.123846 |
-| 30          | 6     | 1       | 2                              | 48                     | 0.116751  | 0.118213 |
-| 30          | 9     | 1       | 2                              | 84                     | 0.108761  | 0.122416 |
-| 30          | 12    | 1       | 2                              | 108                    | 0.0822861 | 0.147608 |
-| 30          | 18    | 1       | 2                              | 194                    | 0.00186316| 0.227627 |
+| 10          | 3     | 1       | 2                              | 7                      | 0.131936  | 0.131422 |
+| 30          | 3     | 1       | 2                              | 22                     | 0.124073  | 0.123846 |
+| 30          | 6     | 1       | 2                              | 43                     | 0.116751  | 0.118213 |
+| 30          | 9     | 1       | 2                              | 63                     | 0.108761  | 0.122416 |
+| 30          | 12    | 1       | 2                              | 84                     | 0.0822861 | 0.147608 |
+| 30          | 18    | 1       | 2                              | 158                    | 0.00186316| 0.227627 |
 
 Our algorithm with multy threads results:
 
 | Tree number | Depth | Threads | Dataset reading and binarizing | Time for tree building | Train MSE | Test MSE |
 |-------------|-------|---------|--------------------------------|------------------------|-----------|----------|
 | 10          | 3     | 4       | 2                              | 2                      | 0.131936  | 0.131422 |
-| 30          | 3     | 4       | 2                              | 8                      | 0.124073  | 0.123846 |
-| 30          | 6     | 4       | 2                              | 17                     | 0.116751  | 0.118213 |
-| 30          | 9     | 4       | 2                              | 25                     | 0.108761  | 0.122416 |
-| 30          | 12    | 4       | 2                              | 34                     | 0.0822861 | 0.147608 |
-| 30          | 18    | 4       | 2                              | 90                     | 0.00186316| 0.227627 |
+| 30          | 3     | 4       | 2                              | 7                      | 0.124073  | 0.123846 |
+| 30          | 6     | 4       | 2                              | 15                     | 0.116751  | 0.118213 |
+| 30          | 9     | 4       | 2                              | 21                     | 0.108761  | 0.122416 |
+| 30          | 12    | 4       | 2                              | 30                     | 0.0822861 | 0.147608 |
+| 30          | 18    | 4       | 2                              | 71                     | 0.00186316| 0.227627 |
 
 XGBoost results:
 
@@ -80,6 +80,18 @@ XGBoost results:
 | 30          | 18    | 4       | 1                                 | 62                     | 0.00037853| 0.254394 |
 
 
+LightGBM results:
+
+| Tree number | Depth | Threads | Dataset reading and preprocessing | Time for tree building | Train MSE | Test MSE |
+|-------------|-------|---------|-----------------------------------|------------------------|-----------|----------|
+| 10          | 3     | 4       | 1                                 | 0.1                    | 0.062     | 0.062    |
+| 30          | 3     | 4       | 1                                 | 0.3                    | 0.037     | 0.037    |
+| 30          | 6     | 4       | 1                                 | 0.5                    | 0.0188    | 0.0345   |
+| 30          | 9     | 4       | 1                                 | 4.7                    | 0.00037   | 0.0532   |
+| 30          | 12    | 4       | 1                                 | 49.5                   | 0         | 0.051    |
+| 30          | 18    | 4       | 1                                 | --                     | 0         | --       |
+
+
 
 ## Full Higgs dataset (10500000 samples in train and 500000 in test):
 
@@ -87,23 +99,23 @@ Our algorithm with single thread results:
 
 | Tree number | Depth | Threads | Dataset reading and binarizing | Time for tree building | Train MSE | Test MSE |
 |-------------|-------|---------|--------------------------------|------------------------|-----------|----------|
-| 1           | 3     | 1       | 179                            | 49                     | 0.226591  | 0.226617 |
-| 3           | 3     | 1       | 179                            | 159                    | 0.208841  | 0.208555 |
-| 3           | 6     | 1       | 179                            | 281                    | 0.200677  | 0.200362 |
-| 30          | 6     | 1       | 179                            | 3116                   | 0.182976  | 0.182697 |
-| 10          | 12    | 1       | 179                            | 2123                   | 0.181193  | 0.181422 |
-| 10          | 18    | 1       | 179                            | 3541                   | 0.1702    | 0.178566 |
+| 1           | 3     | 1       | 179                            | 45                     | 0.226591  | 0.226617 |
+| 3           | 3     | 1       | 179                            | 132                    | 0.208841  | 0.208555 |
+| 3           | 6     | 1       | 179                            | 258                    | 0.200677  | 0.200362 |
+| 30          | 6     | 1       | 179                            | 2716                   | 0.182976  | 0.182697 |
+| 10          | 12    | 1       | 179                            | 2107                   | 0.181193  | 0.181422 |
+| 10          | 18    | 1       | 179                            | 3215                   | 0.1702    | 0.178566 |
 
 Our algorithm with multy threads results:
 
 | Tree number | Depth | Threads | Dataset reading and binarizing | Time for tree building | Train MSE | Test MSE |
 |-------------|-------|---------|--------------------------------|------------------------|-----------|----------|
-| 1           | 3     | 4       | 179                            | 24                     | 0.226591  | 0.226617 |
-| 3           | 3     | 4       | 179                            | 76                     | 0.208841  | 0.208555 |
-| 3           | 6     | 4       | 179                            | 167                    | 0.200677  | 0.200362 |
-| 30          | 6     | 4       | 179                            | 1409                   | 0.182976  | 0.182697 |
-| 10          | 12    | 4       | 179                            | 899                    | 0.181193  | 0.181422 |
-| 10          | 18    | 4       | 179                            | 1417                   | 0.1702    | 0.178566 |
+| 1           | 3     | 4       | 179                            | 21                     | 0.226591  | 0.226617 |
+| 3           | 3     | 4       | 179                            | 64                     | 0.208841  | 0.208555 |
+| 3           | 6     | 4       | 179                            | 148                    | 0.200677  | 0.200362 |
+| 30          | 6     | 4       | 179                            | 1216                   | 0.182976  | 0.182697 |
+| 10          | 12    | 4       | 179                            | 732                    | 0.181193  | 0.181422 |
+| 10          | 18    | 4       | 179                            | 1277                   | 0.1702    | 0.178566 |
 
 XGBoost results:
 
@@ -116,15 +128,30 @@ XGBoost results:
 | 10          | 12    | 4       | 145                               | 532                    | 0.16965   | 0.178883 |
 | 10          | 18    | 4       | 145                               | 1800                   | 0.102137  | 0.22046  |
 
+LightGBM results:
+
+| Tree number | Depth | Threads | Dataset reading and preprocessing | Time for tree building | Train MSE | Test MSE |
+|-------------|-------|---------|-----------------------------------|------------------------|-----------|----------|
+| 1           | 3     | 4       | 162                               | 0.9                    | 0.212261  | 0.212235 |
+| 3           | 3     | 4       | 162                               | 1.8                    | 0.202060  | 0.201876 |
+| 3           | 6     | 4       | 162                               | 4.5                    | 0.190694  | 0.190546 |
+| 30          | 6     | 4       | 162                               | 36                     | 0.179512  | 0.180146 |
+| 10          | 12    | 4       | 162                               | 148.6                  | 0.16938   | 0.181175 |
+| 10          | 18    | 4       | 162                               | 2100                   | 0.089288  | 0.25754  |
+
 ## Conclusions:
 
-1) Our multithreading works good, 2-3 times reducing fitting time with 4 CPU cores.
+1) Our multithreading works! And even works well, 2-3 times reducing fitting time with 4 CPU cores.
 
-2) On Small Higgs our speed is almost the same as speed of XGBoost, while results are quite different. This is because of using oblivious decision trees we can't overfit so much with trees of big depth, what we can see at tables above.
+2) On Small Higgs our speed is almost the same as speed of XGBoost, while results are quite different. This is because we use oblivious decision trees and we can't overfit on train set so much with trees of big depth, what we can see at tables above.
 
-3) On full Higgs we can see that we have not only huge results difference, but in fitting time too. We works like 3-4 times slower on such giant dataset with small tree depth, but our time is almost linear to tree_number * depth, while time of XGBoost isn't, here it looks exponential from depth. This is because of dataset is big enough to have a lot of deep leafs, so XGBoost works much slower, while our algorithm on oblivious decision trees doesn't have such problems, and works faset than XGBoost on trees with big depth.
+3) On Small Higgs we are much much slower than LightGBM when use trees of small size, and we become faster when tree depth is like 10 or more. And the same thing with overfit as comparing to XGBoost.
 
-4) Even more, we can look on overfitting value from 2 last columns and see that our algorithm doesn't overfit on much bigger tree depth values, while XGBoost fails. On such a big dataset as full Higgs it looks most obvious.
+4) On full Higgs we can see that we have not only huge results difference with XGBoost, but in fitting time too. We works like 3-4 times slower on such giant dataset with small tree depth, but our time is almost linear to tree_number * depth, while time of XGBoost isn't, here it looks exponential from depth. This is because of dataset is big enough to have a lot of deep leafs, so XGBoost works much slower, while our algorithm on oblivious decision trees doesn't have such problems, and works faset than XGBoost on trees with big depth.
+
+5) What about LightGBM - here we are much slower too on small trees and become faster on deep ones. And we have the save thing with overfit as on small Higgs - LightGBM overfits much harder than our algorithm.
+
+6) So, to end with, I think that comparing different algorithms is not so fair idea, every have its pros and cons, and each can be made much faster without accuracy decreasing, for example with feature and sample subsampling. But it wasn't our goal, we tried to compare speeds in the same limitations, and see that our algorithm works faster on deep trees, but first layers are building much slower than in LightGBM. Maybe it can be fixed with code optimization, but for me it looks like it's oblivious decesion trees problem and its difference from algorithms used in XGBoost and LightGBM.
 
 # Used papers
 
