@@ -42,23 +42,27 @@ string results_path - path where to save csv wiht results
 
 Benchmarks: TODO
 
-Higgs:
+Full Higgs dataset (10500000 samples in train and 500000 in test):
 
 Our algorithm results:
 
-| Tree number | Depth | Threads | Total time | Time for tree building only | Train error | Test error |
-|-------------|-------|---------|------------|-----------------------------|-------------|------------|
-|             |       |         |            |                             |             |            |
-|             |       |         |            |                             |             |            |
-|             |       |         |            |                             |             |            |
+| Tree number | Depth | Threads | Dataset reading and binarizing | Time for tree building | Train MSE | Test MSE |
+|-------------|-------|---------|--------------------------------|------------------------|-----------|----------|
+| 1           | 3     | 4       | 179                            | 24                     | 0.226591  | 0.226617 |
+| 3           | 3     | 4       | 179                            | 76                     | 0.208841  | 0.208555 |
+| 3           | 6     | 4       | 179                            | 167                    | 0.200677  | 0.200362 |
+| 30          | 6     | 4       | 179                            | 1409                   | 0.182976  | 0.182697 |
+| 10          | 18    | 4       | 179                            | 1417                   | 0.1702    | 0.178566 |
 
-LightGBM results:
+XGBoost results:
 
-| Tree number | Depth | Threads | Total time | Time for tree building only | Train error | Test error |
-|-------------|-------|---------|------------|-----------------------------|-------------|------------|
-|             |       |         |           |                             |             |            |
-|             |       |         |            |                             |             |            |
-|             |       |         |            |                             |             |            |
+| Tree number | Depth | Threads | Dataset reading and preprocessing | Time for tree building | Train MSE | Test MSE |
+|-------------|-------|---------|-----------------------------------|------------------------|-----------|----------|
+| 1           | 3     | 4       | 145                               | 7                      | 0.221908  | 0.221799 |
+| 3           | 3     | 4       | 145                               | 20                     | 0.208278  | 0.208066 |
+| 3           | 6     | 4       | 145                               | 44                     | 0.194487  | 0.194325 |
+| 30          | 6     | 4       | 145                               | 480                    | 0.179546  | 0.179736 |
+| 10          | 18    | 4       | 145                               | 1800                   | 0.102137  | 0.22046  |
 
 
 # Used papers
