@@ -40,11 +40,59 @@ string results_path - path where to save csv wiht results
 
 # Done experiments to compare with others
 
-Benchmarks: TODO
+Benchmarks:
 
-Full Higgs dataset (10500000 samples in train and 500000 in test):
+## Higgs dataset from Kaggle competition (200000 samples in train and 50000 in test):
 
-Our algorithm results:
+Our algorithm with single thread results:
+
+| Tree number | Depth | Threads | Dataset reading and binarizing | Time for tree building | Train MSE | Test MSE |
+|-------------|-------|---------|--------------------------------|------------------------|-----------|----------|
+| 10          | 3     | 1       | 2                              | 8                      | 0.131936  | 0.131422 |
+| 30          | 3     | 1       | 2                              | 25                     | 0.124073  | 0.123846 |
+| 30          | 6     | 1       | 2                              | 48                     | 0.116751  | 0.118213 |
+| 30          | 9     | 1       | 2                              | 84                     | 0.108761  | 0.122416 |
+| 30          | 12    | 1       | 2                              | 108                    | 0.0822861 | 0.147608 |
+| 30          | 18    | 1       | 2                              | 194                    | 0.00186316| 0.227627 |
+
+Our algorithm with multy threads results:
+
+| Tree number | Depth | Threads | Dataset reading and binarizing | Time for tree building | Train MSE | Test MSE |
+|-------------|-------|---------|--------------------------------|------------------------|-----------|----------|
+| 10          | 3     | 4       | 2                              | 2                      | 0.131936  | 0.131422 |
+| 30          | 3     | 4       | 2                              | 8                      | 0.124073  | 0.123846 |
+| 30          | 6     | 4       | 2                              | 17                     | 0.116751  | 0.118213 |
+| 30          | 9     | 4       | 2                              | 25                     | 0.108761  | 0.122416 |
+| 30          | 12    | 4       | 2                              | 34                     | 0.0822861 | 0.147608 |
+| 30          | 18    | 4       | 2                              | 90                     | 0.00186316| 0.227627 |
+
+XGBoost results:
+
+| Tree number | Depth | Threads | Dataset reading and binarizing | Time for tree building | Train MSE | Test MSE |
+|-------------|-------|---------|--------------------------------|------------------------|-----------|----------|
+| 10          | 3     | 4       | 1                              | 2                      | 0.127176  | 0.127550 |
+| 30          | 3     | 4       | 1                              | 6                      | 0.120089  | 0.121364 |
+| 30          | 6     | 4       | 1                              | 15                     | 0.107211  | 0.141912 |
+| 30          | 9     | 4       | 1                              | 22                     | 0.082569  | 0.199075 |
+| 30          | 12    | 4       | 1                              | 30                     | 0.0398245 | 0.237417 |
+| 30          | 18    | 4       | 1                              | 62                     | 0.00037853| 0.254394 |
+
+
+
+## Full Higgs dataset (10500000 samples in train and 500000 in test):
+
+Our algorithm with single thread results:
+
+| Tree number | Depth | Threads | Dataset reading and binarizing | Time for tree building | Train MSE | Test MSE |
+|-------------|-------|---------|--------------------------------|------------------------|-----------|----------|
+| 1           | 3     | 1       | 179                            | 49                     | 0.226591  | 0.226617 |
+| 3           | 3     | 1       | 179                            | 159                    | 0.208841  | 0.208555 |
+| 3           | 6     | 1       | 179                            | 281                    | 0.200677  | 0.200362 |
+| 30          | 6     | 1       | 179                            | 3116                   | 0.182976  | 0.182697 |
+| 10          | 12    | 1       | 179                            | 2123                   | 0.181193  | 0.181422 |
+| 10          | 18    | 1       | 179                            | 3541                   | 0.1702    | 0.178566 |
+
+Our algorithm with multy threads results:
 
 | Tree number | Depth | Threads | Dataset reading and binarizing | Time for tree building | Train MSE | Test MSE |
 |-------------|-------|---------|--------------------------------|------------------------|-----------|----------|
@@ -52,6 +100,7 @@ Our algorithm results:
 | 3           | 3     | 4       | 179                            | 76                     | 0.208841  | 0.208555 |
 | 3           | 6     | 4       | 179                            | 167                    | 0.200677  | 0.200362 |
 | 30          | 6     | 4       | 179                            | 1409                   | 0.182976  | 0.182697 |
+| 10          | 12    | 4       | 179                            | 899                    | 0.181193  | 0.181422 |
 | 10          | 18    | 4       | 179                            | 1417                   | 0.1702    | 0.178566 |
 
 XGBoost results:
@@ -62,6 +111,7 @@ XGBoost results:
 | 3           | 3     | 4       | 145                               | 20                     | 0.208278  | 0.208066 |
 | 3           | 6     | 4       | 145                               | 44                     | 0.194487  | 0.194325 |
 | 30          | 6     | 4       | 145                               | 480                    | 0.179546  | 0.179736 |
+| 10          | 12    | 4       | 145                               | 532                    | 0.16965   | 0.178883 |
 | 10          | 18    | 4       | 145                               | 1800                   | 0.102137  | 0.22046  |
 
 
