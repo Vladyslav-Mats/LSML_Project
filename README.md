@@ -141,17 +141,17 @@ LightGBM results:
 
 ## Conclusions:
 
-1) Our multithreading works! And even works well, 2-3 times reducing fitting time with 4 CPU cores.
+1) Our multithreading works, 2-3 times reducing fitting time with 4 CPU cores.
 
-2) On Small Higgs our speed is almost the same as speed of XGBoost, while results are quite different. This is because we use oblivious decision trees and we can't overfit on train set so much with trees of big depth, what we can see at tables above.
+2) On Small Higgs our performance is similar to XGBoost's, while results are quite different. This is because we use oblivious decision trees and don't overfit on train set so much with deeper trees.
 
-3) On Small Higgs we are much much slower than LightGBM when use trees of small size, and we become faster when tree depth is like 10 or more. And the same thing with overfit as comparing to XGBoost.
+3) On Small Higgs we are much much slower than LightGBM when using trees of small depth, but become faster when tree depth is like 10 or more. And the same thing with overfitting as with XGBoost.
 
-4) On full Higgs we can see that we have not only huge results difference with XGBoost, but in fitting time too. We works like 3-4 times slower on such giant dataset with small tree depth, but our time is almost linear to tree_number * depth, while time of XGBoost isn't, here it looks exponential from depth. This is because of dataset is big enough to have a lot of deep leafs, so XGBoost works much slower, while our algorithm on oblivious decision trees doesn't have such problems, and works faset than XGBoost on trees with big depth.
+4) On full Higgs we can see that we have not only huge results difference with XGBoost, but in fitting time too. Our GBM works like 3-4 times slower on such giant dataset with small tree depth, but our algo scales linearly to tree depth, while XGBoost seems to have exponential scaling. This time dataset is large enough to spawn deep leaves, so XGBoost works much slower, while our algorithm on oblivious decision trees chooses the splitting feature only once per level.
 
-5) What about LightGBM - here we are much slower too on small trees and become faster on deep ones. And we have the save thing with overfit as on small Higgs - LightGBM overfits much harder than our algorithm.
+5) What about LightGBM - here we are much slower too on small trees and become faster on deep ones. And we have the same thing with overfitting on mini-Higgs: LightGBM is much more affected by overfitting than our algorithm.
 
-6) So, to end with, I think that comparing different algorithms is not so fair idea, every have its pros and cons, and each can be made much faster without accuracy decreasing, for example with feature and sample subsampling. But it wasn't our goal, we tried to compare speeds in the same limitations, and see that our algorithm works faster on deep trees, but first layers are building much slower than in LightGBM. Maybe it can be fixed with code optimization, but for me it looks like it's oblivious decesion trees problem and its difference from algorithms used in XGBoost and LightGBM.
+6) So, to sum up, I think that comparing different algorithms is not so fair idea, each of them has its pros and cons. Our algo builds deep tree levels faster than state-of-the-art implementations, but falls short when building top levels. Maybe it can be fixed with code optimization, but most likely these results reflect algorithms' properties and there isn't much to do.
 
 # Used papers
 
